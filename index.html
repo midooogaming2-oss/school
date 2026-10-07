@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مدرسة الشهيد محمود محمد الصاوي</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--surface:#fff;--ink:#000;--muted:#555;--line:#000;--coffee:#000;--on:#fff;--latte:#f2f2f2;--nav:rgba(255,255,255,.85);--focus:#000;--dots:transparent;--sh:transparent;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-stage="p"]{--bg:#FFFDF0;--surface:#fff;--ink:#1F1F1F;--muted:#6B6B5E;--line:#FFE680;--coffee:#FFD43B;--on:#1F1F1F;--latte:#FFF4C2;--nav:rgba(255,253,240,.9);--focus:#1F1F1F;--dots:#FFF0A8;--sh:#E6B800}
+:root[data-stage="m"]{--bg:#F5FAFF;--surface:#fff;--ink:#0B2A40;--muted:#5B7488;--line:#CFE7F8;--coffee:#6EC3F7;--on:#0B2A40;--latte:#E4F3FD;--nav:rgba(245,250,255,.88);--focus:#1E78B8;--dots:transparent;--sh:transparent}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg) radial-gradient(var(--dots) 2.5px,transparent 2.5px) 0 0/30px 30px;color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;font-size:18px;line-height:1.8}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+h1{font-size:clamp(2.2rem,7vw,3.8rem);line-height:1.2;margin:0;font-weight:700}
+.sub{color:var(--muted);font-size:1.2rem;margin:6px 0 28px}.old{color:var(--muted);font-size:1.2rem;margin:8px 0 14px}
+#picker{min-height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px 20px}
+.stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:100%;max-width:640px;margin-top:8px}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:44px 20px;font-size:1.6rem;font-weight:700;cursor:pointer;transition:transform .2s,background .2s}
+.stage{color:var(--ink);border:2px solid var(--ink)}.stage:hover{background:var(--ink);color:var(--surface);transform:scale(1.02)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--nav);backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--line)}
+.bar{max-width:880px;margin:0 auto;padding:10px 20px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:700;font-size:.95rem;line-height:1.4}.brand small{font-weight:400;color:var(--muted)}.bar>div:first-child{display:flex;align-items:center;flex-wrap:wrap;gap:2px 0}
+.chip{background:var(--latte);border-radius:999px;padding:2px 14px;font-size:.9rem;margin-inline-start:10px}
+#dots{background:none;border:0;font-size:1.9rem;line-height:1;cursor:pointer;padding:4px 12px;border-radius:12px}
+#dots:hover{background:var(--latte)}
+#menu{position:fixed;top:calc(env(safe-area-inset-top,0px) + 54px);inset-inline-end:16px;width:min(300px,calc(100% - 32px));background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:8px;box-shadow:0 18px 50px rgba(0,0,0,.18);z-index:30}
+#menu button{display:block;width:100%;text-align:start;background:none;border:0;padding:10px 14px;border-radius:12px;cursor:pointer}
+#menu button:hover{background:var(--latte)}
+#menu hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+.pw{display:flex;gap:8px;padding:6px}
+.pw input{flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--bg)}
+.pw button{width:auto;background:var(--coffee);color:var(--on);text-align:center}
+.pw button:hover{background:var(--coffee);opacity:.9}
+#perr,#err{color:#B3382C;font-size:.9rem;padding:0 14px}
+main{max-width:880px;margin:0 auto;padding:56px 20px 80px}
+.btn{display:inline-block;background:var(--coffee);color:var(--on);border:0;border-radius:999px;padding:10px 26px;font-weight:500;text-decoration:none;cursor:pointer;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:26px 28px;margin-bottom:18px}
+.card h3{font-size:1.5rem;margin:4px 0 6px}
+.card p{margin:0 0 10px;color:var(--muted);white-space:pre-wrap}
+.card img{width:100%;border-radius:18px;margin-top:8px}
+.meta{display:flex;gap:14px;color:var(--ink);font-size:.9rem;font-weight:500}
+.meta time{color:var(--muted)}
+.card .btn{margin:6px 0 0;padding:6px 20px}
+.del{background:none;border:0;color:#B3382C;cursor:pointer;display:block;margin-top:10px}
+.empty{color:var(--muted)}
+dialog{border:0;border-radius:26px;padding:26px;width:min(460px,calc(100% - 32px));background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog label{display:block;margin:12px 0 4px;font-weight:500}
+dialog input,dialog select,dialog textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--bg)}
+.row{display:flex;gap:10px;margin-top:18px}
+.ghost{background:var(--latte);color:var(--ink)}
+:root[data-stage="p"] body{font-family:"Baloo Bhaijaan 2","IBM Plex Sans Arabic",Tahoma,sans-serif}
+:root[data-stage="p"] h1{font-weight:800}:root[data-stage="p"] h1::after{content:" ⭐"}
+:root[data-stage="p"] header{border-bottom:3px solid var(--coffee)}
+:root[data-stage="p"] .card{border:3px solid var(--coffee);border-radius:30px;box-shadow:0 6px 0 var(--sh)}
+:root[data-stage="p"] .card:nth-of-type(odd){transform:rotate(-.6deg)}:root[data-stage="p"] .card:nth-of-type(even){transform:rotate(.6deg)}
+:root[data-stage="p"] .meta span{background:var(--latte);border-radius:999px;padding:0 12px}
+:root[data-stage="p"] .btn{border:3px solid var(--sh);box-shadow:0 4px 0 var(--sh);font-weight:700}:root[data-stage="p"] .btn:active{transform:translateY(3px);box-shadow:none}
+:root[data-stage="p"] #menu{border:3px solid var(--coffee);border-radius:28px}
+:root[data-stage="p"] .chip{font-size:1rem;font-weight:700}
+</style>
+</head>
+<body>
+<section id="picker" hidden>
+  <h1>مدرسة الشهيد محمود محمد الصاوي</h1>
+  <p class="old">(الحديثة سابقًا)</p>
+  <p class="sub">اختر مرحلتك الدراسية</p>
+  <div class="stages">
+    <button class="stage" data-s="p">المرحلة الابتدائية</button>
+    <button class="stage" data-s="m">المرحلة الإعدادية</button>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <header><div class="bar">
+    <div><span class="brand">مدرسة الشهيد محمود محمد الصاوي <small>(الحديثة سابقًا)</small></span><span class="chip" id="chip"></span></div>
+    <button id="dots" aria-label="القائمة" aria-expanded="false">⋯</button>
+  </div></header>
+  <div id="menu" hidden>
+    <button data-go="home">الرئيسية</button>
+    <button data-go="exams">جدول الامتحانات</button>
+    <button data-go="videos">الفيديوهات</button>
+    <button data-go="schedules">جداول الفصول</button>
+    <button data-go="fb">قناة الفيس بوك</button>
+    <hr>
+    <button id="chg">تغيير المرحلة</button>
+    <div id="loginbox">
+      <div class="pw"><input id="pw" type="password" placeholder="كلمة مرور المدير" autocomplete="off"><button id="login">دخول</button></div>
+      <div id="perr"></div>
+    </div>
+    <button id="logout" hidden>تسجيل خروج المدير</button>
+  </div>
+  <main id="view"></main>
+</div>
+
+<dialog id="dlg">
+  <h2 style="margin:0">إضافة محتوى</h2>
+  <label for="sec">القسم</label>
+  <select id="sec"><option value="exams">جدول الامتحانات</option><option value="videos">الفيديوهات</option><option value="schedules">جداول الفصول</option></select>
+  <label for="stg">المرحلة</label>
+  <select id="stg"><option value="p">الابتدائية</option><option value="m">الإعدادية</option><option value="both">الاثنتان</option></select>
+  <label for="ttl">العنوان</label><input id="ttl">
+  <label for="bd">النص (اختياري)</label><textarea id="bd" rows="3"></textarea>
+  <label for="fl">صورة (اختياري)</label><input id="fl" type="file" accept="image/*">
+  <label for="vu">رابط فيديو (اختياري)</label><input id="vu" type="url" dir="ltr" placeholder="https://">
+  <div id="err"></div>
+  <div class="row"><button class="btn" id="save">نشر</button><button class="btn ghost" id="cancel">إلغاء</button></div>
+</dialog>
+
+<script>
+const PASS='1234#admin#1234';                       // غيّر كلمة المرور هنا
+const FB='https://facebook.com/groups/1699431890287970/?mibextid=rS40aB7S9Ucbxw6v';          // ضع رابط قناة الفيس بوك هنا
+const SEC={exams:'جدول الامتحانات',videos:'الفيديوهات',schedules:'جداول الفصول'};
+const STG={p:'المرحلة الابتدائية',m:'المرحلة الإعدادية'};
+const SHORT={p:'الابتدائية',m:'الإعدادية'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const put=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}};
+let items=[];try{items=JSON.parse(get('sch_items')||'[]')}catch(e){}
+let stage=get('sch_stage'),admin=false,cur='home';
+const save=()=>put('sch_items',JSON.stringify(items));
+
+function card(i){
+  const d=new Date(i.ts).toLocaleDateString('ar-EG',{day:'numeric',month:'long'});
+  return `<article class="card"><div class="meta"><span>${SEC[i.sec]}</span><time>${d}</time></div><h3>${esc(i.title)}</h3>`+
+  (i.body?`<p>${esc(i.body)}</p>`:'')+(i.img?`<img src="${i.img}" alt="${esc(i.title)}">`:'')+
+  (i.vid?`<a class="btn" href="${esc(i.vid)}" target="_blank" rel="noopener">مشاهدة الفيديو</a>`:'')+
+  (admin?`<button class="del" data-del="${i.id}">حذف</button>`:'')+`</article>`;
+}
+function render(){
+  const all=items.filter(i=>i.stage==='both'||i.stage===stage).sort((a,b)=>b.ts-a.ts);
+  const list=cur==='home'?all.slice(0,12):all.filter(i=>i.sec===cur);
+  $('#view').innerHTML=`<h1>${cur==='home'?'آخر ما تم رفعه':SEC[cur]}</h1><p class="sub">${STG[stage]}</p>`+
+    (admin?'<button class="btn" id="add">إضافة محتوى</button>':'')+
+    (list.length?list.map(card).join(''):'<p class="empty">لا يوجد محتوى بعد.</p>');
+  if(admin)$('#add').onclick=()=>{$('#sec').value=cur==='home'?'exams':cur;$('#stg').value=stage;$('#err').textContent='';$('#dlg').showModal()};
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{items=items.filter(i=>i.id!==b.dataset.del);save();render()});
+}
+function enter(){document.documentElement.dataset.stage=stage;$('#picker').hidden=true;$('#app').hidden=false;$('#chip').textContent=SHORT[stage];cur='home';render();scrollTo(0,0)}
+function pick(){delete document.documentElement.dataset.stage;$('#app').hidden=true;$('#picker').hidden=false}
+function menu(open){$('#menu').hidden=!open;$('#dots').setAttribute('aria-expanded',open)}
+
+document.querySelectorAll('.stage').forEach(b=>b.onclick=()=>{stage=b.dataset.s;put('sch_stage',stage);enter()});
+$('#dots').onclick=e=>{e.stopPropagation();menu($('#menu').hidden)};
+$('#menu').onclick=e=>e.stopPropagation();
+document.addEventListener('click',()=>menu(false));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')menu(false)});
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{menu(false);if(b.dataset.go==='fb'){window.open(FB,'_blank','noopener');return}cur=b.dataset.go;render();scrollTo(0,0)});
+$('#chg').onclick=()=>{menu(false);try{localStorage.removeItem('sch_stage')}catch(e){}pick()};
+$('#login').onclick=()=>{
+  if($('#pw').value===PASS){admin=true;$('#pw').value='';$('#perr').textContent='';$('#loginbox').hidden=true;$('#logout').hidden=false;menu(false);render()}
+  else $('#perr').textContent='كلمة المرور غير صحيحة';
+};
+$('#logout').onclick=()=>{admin=false;$('#loginbox').hidden=false;$('#logout').hidden=true;menu(false);render()};
+$('#cancel').onclick=()=>$('#dlg').close();
+
+function readImg(f){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.7))};im.src=fr.result};fr.readAsDataURL(f)})}
+$('#save').onclick=async()=>{
+  const t=$('#ttl').value.trim();
+  if(!t){$('#err').textContent='اكتب العنوان أولًا';return}
+  const it={id:''+Date.now(),ts:Date.now(),sec:$('#sec').value,stage:$('#stg').value,title:t,body:$('#bd').value.trim()};
+  const f=$('#fl').files[0];if(f)it.img=await readImg(f);
+  const v=$('#vu').value.trim();if(/^https?:\/\//i.test(v))it.vid=v;
+  items.push(it);
+  if(!save()){items.pop();$('#err').textContent='المساحة ممتلئة، جرّب صورة أصغر';return}
+  ['#ttl','#bd','#fl','#vu'].forEach(s=>$(s).value='');
+  $('#dlg').close();render();
+};
+
+if(STG[stage])enter();else pick();
+</script>
+</body>
+</html>
