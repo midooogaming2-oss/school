@@ -63,7 +63,9 @@ dialog input,dialog select,dialog textarea{width:100%;border:1px solid var(--lin
 :root[data-stage="p"] .btn{border:3px solid var(--sh);box-shadow:0 4px 0 var(--sh);font-weight:700}:root[data-stage="p"] .btn:active{transform:translateY(3px);box-shadow:none}
 :root[data-stage="p"] #menu{border:3px solid var(--coffee);border-radius:28px}
 :root[data-stage="p"] .chip{font-size:1rem;font-weight:700}
+.card video{width:100%;border-radius:18px;margin-top:8px}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <section id="picker" hidden>
@@ -107,41 +109,60 @@ dialog input,dialog select,dialog textarea{width:100%;border:1px solid var(--lin
   <label for="ttl">العنوان</label><input id="ttl">
   <label for="bd">النص (اختياري)</label><textarea id="bd" rows="3"></textarea>
   <label for="fl">صورة (اختياري)</label><input id="fl" type="file" accept="image/*">
-  <label for="vu">رابط فيديو (اختياري)</label><input id="vu" type="url" dir="ltr" placeholder="https://">
+  <label for="vf">فيديو (حتى ٥٠ ميجابايت)</label><input id="vf" type="file" accept="video/*">
+  <label for="vu">أو رابط فيديو</label><input id="vu" type="url" dir="ltr" placeholder="https://">
   <div id="err"></div>
   <div class="row"><button class="btn" id="save">نشر</button><button class="btn ghost" id="cancel">إلغاء</button></div>
 </dialog>
 
 <script>
-const PASS='1234#admin#1234';                       // غيّر كلمة المرور هنا
-const FB='https://facebook.com/groups/1699431890287970/?mibextid=rS40aB7S9Ucbxw6v';          // ضع رابط قناة الفيس بوك هنا
+const SUPABASE_URL='https://vylasqzhyhkehlrbmbrm.supabase.co';
+const SUPABASE_KEY='sb_publishable_2ti8RKpdpeRFk4MsMZNZbQ_-qUurAVy';
+const ADMIN_EMAIL='admin@al-sawy-school.com';
+const FB='https://facebook.com/groups/1699431890287970/?mibextid=rS40aB7S9Ucbxw6v';
 const SEC={exams:'جدول الامتحانات',videos:'الفيديوهات',schedules:'جداول الفصول'};
 const STG={p:'المرحلة الابتدائية',m:'المرحلة الإعدادية'};
 const SHORT={p:'الابتدائية',m:'الإعدادية'};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
-const put=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}};
-let items=[];try{items=JSON.parse(get('sch_items')||'[]')}catch(e){}
-let stage=get('sch_stage'),admin=false,cur='home';
-const save=()=>put('sch_items',JSON.stringify(items));
+const put=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let items=[],stage=get('sch_stage'),admin=false,cur='home',loading=true,failed=false;
 
+async function load(){
+  const {data,error}=await sb.from('items').select('*').order('created_at',{ascending:false});
+  loading=false;failed=!!error;items=data||[];render();
+}
 function card(i){
-  const d=new Date(i.ts).toLocaleDateString('ar-EG',{day:'numeric',month:'long'});
-  return `<article class="card"><div class="meta"><span>${SEC[i.sec]}</span><time>${d}</time></div><h3>${esc(i.title)}</h3>`+
-  (i.body?`<p>${esc(i.body)}</p>`:'')+(i.img?`<img src="${i.img}" alt="${esc(i.title)}">`:'')+
-  (i.vid?`<a class="btn" href="${esc(i.vid)}" target="_blank" rel="noopener">مشاهدة الفيديو</a>`:'')+
+  const d=new Date(i.created_at).toLocaleDateString('ar-EG',{day:'numeric',month:'long'});
+  const v=i.video_url;
+  const vid=v?(v.startsWith(SUPABASE_URL)?`<video controls preload="metadata" src="${esc(v)}"></video>`:`<a class="btn" href="${esc(v)}" target="_blank" rel="noopener">مشاهدة الفيديو</a>`):'';
+  return `<article class="card"><div class="meta"><span>${SEC[i.section]}</span><time>${d}</time></div><h3>${esc(i.title)}</h3>`+
+  (i.body?`<p>${esc(i.body)}</p>`:'')+(i.image_url?`<img src="${esc(i.image_url)}" alt="${esc(i.title)}">`:'')+vid+
   (admin?`<button class="del" data-del="${i.id}">حذف</button>`:'')+`</article>`;
 }
 function render(){
-  const all=items.filter(i=>i.stage==='both'||i.stage===stage).sort((a,b)=>b.ts-a.ts);
-  const list=cur==='home'?all.slice(0,12):all.filter(i=>i.sec===cur);
-  $('#view').innerHTML=`<h1>${cur==='home'?'آخر ما تم رفعه':SEC[cur]}</h1><p class="sub">${STG[stage]}</p>`+
+  const all=items.filter(i=>i.stage==='both'||i.stage===stage);
+  const list=cur==='home'?all.slice(0,12):all.filter(i=>i.section===cur);
+  const empty=loading?'جارٍ التحميل...':failed?'تعذر تحميل المحتوى. حاول مرة أخرى لاحقًا.':'لا يوجد محتوى بعد.';
+  $('#view').innerHTML=`<h1>${cur==='home'?'آخر ما تم رفعه':SEC[cur]}</h1><p class="sub">${STG[stage]||''}</p>`+
     (admin?'<button class="btn" id="add">إضافة محتوى</button>':'')+
-    (list.length?list.map(card).join(''):'<p class="empty">لا يوجد محتوى بعد.</p>');
+    (list.length?list.map(card).join(''):`<p class="empty">${empty}</p>`);
   if(admin)$('#add').onclick=()=>{$('#sec').value=cur==='home'?'exams':cur;$('#stg').value=stage;$('#err').textContent='';$('#dlg').showModal()};
-  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{items=items.filter(i=>i.id!==b.dataset.del);save();render()});
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(b.dataset.del));
 }
+const pathOf=u=>u&&u.startsWith(SUPABASE_URL)&&u.includes('/uploads/')?decodeURIComponent(u.split('/uploads/')[1]):null;
+async function del(id){
+  if(!confirm('حذف هذا العنصر؟'))return;
+  const it=items.find(i=>i.id===id);
+  const {error}=await sb.from('items').delete().eq('id',id);
+  if(error){alert('تعذر الحذف');return}
+  const ps=[pathOf(it&&it.image_url),pathOf(it&&it.video_url)].filter(Boolean);
+  if(ps.length)await sb.storage.from('uploads').remove(ps);
+  load();
+}
+function setAdmin(a){admin=a;$('#loginbox').hidden=a;$('#logout').hidden=!a;render()}
 function enter(){document.documentElement.dataset.stage=stage;$('#picker').hidden=true;$('#app').hidden=false;$('#chip').textContent=SHORT[stage];cur='home';render();scrollTo(0,0)}
 function pick(){delete document.documentElement.dataset.stage;$('#app').hidden=true;$('#picker').hidden=false}
 function menu(open){$('#menu').hidden=!open;$('#dots').setAttribute('aria-expanded',open)}
@@ -153,27 +174,44 @@ document.addEventListener('click',()=>menu(false));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')menu(false)});
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{menu(false);if(b.dataset.go==='fb'){window.open(FB,'_blank','noopener');return}cur=b.dataset.go;render();scrollTo(0,0)});
 $('#chg').onclick=()=>{menu(false);try{localStorage.removeItem('sch_stage')}catch(e){}pick()};
-$('#login').onclick=()=>{
-  if($('#pw').value===PASS){admin=true;$('#pw').value='';$('#perr').textContent='';$('#loginbox').hidden=true;$('#logout').hidden=false;menu(false);render()}
-  else $('#perr').textContent='كلمة المرور غير صحيحة';
+$('#login').onclick=async()=>{
+  const {error}=await sb.auth.signInWithPassword({email:ADMIN_EMAIL,password:$('#pw').value});
+  if(error){$('#perr').textContent='كلمة المرور غير صحيحة';return}
+  $('#pw').value='';$('#perr').textContent='';menu(false);setAdmin(true);
 };
-$('#logout').onclick=()=>{admin=false;$('#loginbox').hidden=false;$('#logout').hidden=true;menu(false);render()};
+$('#logout').onclick=async()=>{await sb.auth.signOut();menu(false);setAdmin(false)};
 $('#cancel').onclick=()=>$('#dlg').close();
 
-function readImg(f){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.7))};im.src=fr.result};fr.readAsDataURL(f)})}
+function resize(f){return new Promise(r=>{const im=new Image();im.onload=()=>{const s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',.82)};im.src=URL.createObjectURL(f)})}
+async function up(file,ext){
+  const path=Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const {error}=await sb.storage.from('uploads').upload(path,file,{contentType:file.type||undefined});
+  if(error)throw error;
+  return sb.storage.from('uploads').getPublicUrl(path).data.publicUrl;
+}
 $('#save').onclick=async()=>{
   const t=$('#ttl').value.trim();
   if(!t){$('#err').textContent='اكتب العنوان أولًا';return}
-  const it={id:''+Date.now(),ts:Date.now(),sec:$('#sec').value,stage:$('#stg').value,title:t,body:$('#bd').value.trim()};
-  const f=$('#fl').files[0];if(f)it.img=await readImg(f);
-  const v=$('#vu').value.trim();if(/^https?:\/\//i.test(v))it.vid=v;
-  items.push(it);
-  if(!save()){items.pop();$('#err').textContent='المساحة ممتلئة، جرّب صورة أصغر';return}
-  ['#ttl','#bd','#fl','#vu'].forEach(s=>$(s).value='');
-  $('#dlg').close();render();
+  const btn=$('#save');btn.disabled=true;$('#err').textContent='جارٍ النشر...';
+  try{
+    const row={section:$('#sec').value,stage:$('#stg').value,title:t,body:$('#bd').value.trim()||null};
+    const img=$('#fl').files[0];if(img)row.image_url=await up(await resize(img),'jpg');
+    const vf=$('#vf').files[0];
+    if(vf){
+      if(vf.size>50*1024*1024)throw new Error('big');
+      row.video_url=await up(vf,vf.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'')||'mp4');
+    }else{const v=$('#vu').value.trim();if(/^https?:\/\//i.test(v))row.video_url=v}
+    const {error}=await sb.from('items').insert(row);
+    if(error)throw error;
+    ['#ttl','#bd','#fl','#vf','#vu'].forEach(x=>$(x).value='');
+    $('#err').textContent='';$('#dlg').close();await load();
+  }catch(e){$('#err').textContent=e.message==='big'?'حجم الفيديو أكبر من ٥٠ ميجابايت':'تعذر النشر، تأكد من تسجيل دخول المدير'}
+  btn.disabled=false;
 };
 
+sb.auth.getSession().then(({data})=>{if(data.session&&data.session.user.email===ADMIN_EMAIL)setAdmin(true)});
 if(STG[stage])enter();else pick();
+load();
 </script>
 </body>
 </html>
